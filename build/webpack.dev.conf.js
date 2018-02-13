@@ -4,7 +4,8 @@ var config = require('../config')
 var merge = require('webpack-merge')
 var swigPlugin = require('./swig.js');
 var baseWebpackConfig = require('./webpack.base.conf')
-
+var CopyWebpackPlugin = require('copy-webpack-plugin')
+var path = require('path')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 // add hot-reload related code to entry chunks
@@ -49,6 +50,13 @@ module.exports = merge(baseWebpackConfig, {
     //   template: 'index.html',
     //   inject: true
     // }),
-    new FriendlyErrorsPlugin()
+    new FriendlyErrorsPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static'),
+        to: path.resolve(__dirname, '../dist/static'),
+        ignore: ['.*']
+      }
+    ])
   ]
 })
