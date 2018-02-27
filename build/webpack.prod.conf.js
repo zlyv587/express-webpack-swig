@@ -82,7 +82,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     // 压缩css 导致postcss不起作用
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name]. css')
+      filename: utils.assetsPath('css/[name].[contenthash].css')
     }),
     new swigPlugin(),
     // generate dist index.html with correct asset hash for caching.

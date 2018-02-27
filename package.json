@@ -20,7 +20,7 @@
     "mkdirp": "^0.5.1",
     "opn": "^4.0.2",
     "ora": "^1.4.0",
-    "postcss-loader": "^2.1.1",
+    "postcss-loader": "^1.2.2",
     "semver": "^5.5.0",
     "serve-favicon": "^2.4.5",
     "shelljs": "^0.8.1",
