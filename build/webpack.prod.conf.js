@@ -34,20 +34,33 @@ function getCommonsChunk(globPath, pathDir) {
   return entries;
 }
 
-
+var cssLoader = [
+  {
+    loader: 'css-loader',
+  },
+  {
+    loader: 'postcss-loader',
+  },
+  {loader: 'less-loader'}
+];
 var webpackConfig = merge(baseWebpackConfig, {
+  output: {
+    path: config.build.assetsRoot,
+    filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+  },
   module: {
-    rules:[
+    rules: [
       {
         test: /\.less$/,
         use: ExtractTextPlugin.extract({
-          use:[ 'css-loader','less-loader'],
+          use: cssLoader,
           fallback: 'style-loader',
         }),
       },
     ]
   },
-  devtool: config.build.productionSourceMap ? '#source-map' : false,
+  devtool: false,
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
@@ -59,16 +72,17 @@ var webpackConfig = merge(baseWebpackConfig, {
       },
       sourceMap: true
     }),
-    // extract css into its own file
-    new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css')
-    }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
-    new OptimizeCSSPlugin({
-      cssProcessorOptions: {
-        safe: true
-      }
+    // new OptimizeCSSPlugin({
+    //   cssProcessorOptions: {
+    //     safe: true
+    //   }
+    // }),
+    // 压缩css 导致postcss不起作用
+    // extract css into its own file
+    new ExtractTextPlugin({
+      filename: utils.assetsPath('css/[name]. css')
     }),
     new swigPlugin(),
     // generate dist index.html with correct asset hash for caching.
@@ -87,14 +101,14 @@ var webpackConfig = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../static'),
-        to: path.resolve(__dirname, '../dist/static'),
+        to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
     ])
   ]
 })
 
-console.log(webpackConfig)
+console.log(JSON.stringify(webpackConfig.module.rules[4]));
 
 if (config.build.productionGzip) {
   var CompressionWebpackPlugin = require('compression-webpack-plugin')

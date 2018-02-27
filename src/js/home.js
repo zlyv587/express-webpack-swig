@@ -5,7 +5,6 @@
 import '../less/home.less'
 
 
-alert('fewafewfewafew')
 var a = 333;
 console.log(a);
 

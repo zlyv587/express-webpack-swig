@@ -2,7 +2,7 @@ var path = require('path')
 var config = require('../config')
 var glob = require('glob');
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-
+var utils = require('./utils');
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -23,13 +23,10 @@ var config  = {
   entry: entries,
   output: {
     path: config.build.assetsRoot,
-    filename: process.env.NODE_ENV === 'production'
-      ? 'js/[name].[chunkhash].js'
-      : 'js/[name].[hash].js',
+    filename: '[name].[hash].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath,
-    chunkFilename: 'js/[id].chunk.js'   //chunk生成的配置
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -57,7 +54,7 @@ var config  = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: assetsPath('img/[name].[hash:7].[ext]')
+          name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
       {
@@ -65,7 +62,7 @@ var config  = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: assetsPath('fonts/[name].[hash:7].[ext]')
+          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
     ]

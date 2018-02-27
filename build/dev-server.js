@@ -1,4 +1,4 @@
-require('./check-versions')()
+
 
 var config = require('../config')
 if (!process.env.NODE_ENV) {
@@ -102,7 +102,7 @@ devMiddleware.waitUntilValid(() => {
   }
   _resolve()
 })
-
+console.log(compiler.outputFileSystem, 'fewafeawewa')
 
 // 引入路由
 require('../routes/web_routers')(app, compiler);

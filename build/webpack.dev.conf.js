@@ -5,9 +5,8 @@ var merge = require('webpack-merge')
 var swigPlugin = require('./swig.js');
 var baseWebpackConfig = require('./webpack.base.conf')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
-var path = require('path')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-
+var path = require('path');
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
   baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
@@ -28,14 +27,16 @@ module.exports = merge(baseWebpackConfig, {
           options: {
             importLoaders: 1
           }
-        },{
+        }, {
+          loader: 'postcss-loader',
+        }, {
           loader: 'less-loader',
         },
       ]
     },]
   },
   // cheap-module-eval-source-map is faster for development
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map',
   plugins: [
     new swigPlugin(),
     new webpack.DefinePlugin({
@@ -54,9 +55,9 @@ module.exports = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../static'),
-        to: path.resolve(__dirname, '../dist/static'),
+        to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
   ]
 })
