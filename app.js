@@ -36,10 +36,41 @@ function setDevServerConfig(app) {
 // compilation error display
   app.use(hotMiddleware);
   app.use((req, res, next) => {
+    var filename = './src/view/component';
+    var distName = './dist/view/component';
+    mkdirp(distName, function () {
+      syncFiles(filename, distName);
+      next()
+    });
+  });
+  function syncFiles(src, target) {
+    fs.readdir(src, function (err, paths) {
+      if (err) {
+        console.log('读取文件夹出错')
+      }
+      paths.map(function (_p) {
+        if (!/\./.test(_p)) {
+          let p = path.join(target, _p);
+          // console.log(p)
+          if (!fs.existsSync(p)) {
+            fs.mkdirSync(p);
+          }
+          return syncFiles(path.join(src, _p), p)
+        }
+        // var data = fs.readFileSync(path.join(src, _p), 'utf8');
+        // fs.writeFileSync(path.join(target, _p), data);
+        var readstream = fs.createReadStream(path.join(src, _p));
+        var writestream = fs.createWriteStream(path.join(target, _p));
+        readstream.pipe(writestream);
+      });
+    });
+  }
+
+  app.use((req, res, next) => {
     var templateOutPath = compiler.outputPath + '/view/page/'
-    let filename = templateOutPath + 'base.html';
+    var filename = templateOutPath + 'base.html';
     compiler.outputFileSystem.readFile(filename, function (err, result) {
-      let fileInfo = path.parse(path.join(filename));
+      var fileInfo = path.parse(path.join(filename));
       mkdirp(fileInfo.dir, () => {
         fs.writeFileSync(path.join(filename), result);
         next()
@@ -51,11 +82,13 @@ function setDevServerConfig(app) {
     // when env is testing, don't need open it
     if (process.env.NODE_ENV !== 'testing') {
       // opn(uri)
-    }})
+    }
+  })
 
-  var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+  var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
   app.use(staticPath, express.static('./static'));
   require('./routes/web_routers')(app, compiler);
+
 }
 
 function getApp() {
@@ -70,7 +103,7 @@ function getApp() {
 
   app.engine('html', swig.renderFile);
   app.set('view engine', 'html');
-  swig.setDefaults({ cache: false });
+  swig.setDefaults({cache: false});
 // 传说中可以使favicon走内存，提高性能？
   app.use(favicon(path.join(__dirname, 'src/img/favicon.ico')));
 
@@ -93,9 +126,9 @@ function getApp() {
 
 
 // 引入路由
-if (process.env.NODE_ENV !== 'dev') {
-  require('./routes/web_routers')(app);
-}
+  if (process.env.NODE_ENV !== 'dev') {
+    require('./routes/web_routers')(app);
+  }
 
 // app.use('', web_routers);
 

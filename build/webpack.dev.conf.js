@@ -2,7 +2,6 @@ var utils = require('./utils')
 var webpack = require('webpack')
 var config = require('../config')
 var merge = require('webpack-merge')
-var swigPlugin = require('./swig.js');
 var baseWebpackConfig = require('./webpack.base.conf')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
@@ -38,10 +37,6 @@ module.exports = merge(baseWebpackConfig, {
   // cheap-module-eval-source-map is faster for development
   devtool: 'cheap-module-eval-source-map',
   plugins: [
-    new swigPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': config.dev.env
-    }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
@@ -52,12 +47,5 @@ module.exports = merge(baseWebpackConfig, {
     //   inject: true
     // }),
     new FriendlyErrorsPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../static'),
-        to: config.build.assetsSubDirectory,
-        ignore: ['.*']
-      }
-    ]),
   ]
 })

@@ -5,15 +5,13 @@ var webpack = require('webpack')
 var config = require('../config')
 var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
-var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-var swigPlugin = require('./swig.js');
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
-var env = process.env.NODE_ENV === 'testing'
-  ? require('../config/test.env')
-  : config.build.env;
+
+
 
 var commonsChunk = getCommonsChunk('src/js/*.js', 'src/js/page/');
 
@@ -63,9 +61,6 @@ var webpackConfig = merge(baseWebpackConfig, {
   devtool: false,
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
-    new webpack.DefinePlugin({
-      'process.env': env
-    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
@@ -84,7 +79,6 @@ var webpackConfig = merge(baseWebpackConfig, {
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')
     }),
-    new swigPlugin(),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
@@ -102,6 +96,10 @@ var webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
+        ignore: ['.*']
+      }, {
+        from: path.resolve(__dirname, '../src/view/component'),
+        to: config.build.assetsRoot + '/view/component',
         ignore: ['.*']
       }
     ])

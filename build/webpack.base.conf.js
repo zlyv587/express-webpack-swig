@@ -1,7 +1,9 @@
 var path = require('path')
 var config = require('../config')
 var glob = require('glob');
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var swigPlugin = require('./swig.js');
+var webpack = require('webpack');
 var utils = require('./utils');
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -16,8 +18,7 @@ function assetsPath(_path) {
 
 
 var entries = getEntry('src/js/*.js', 'src/js/');
-
-
+var env = process.env.NODE_ENV;
 
 var config  = {
   entry: entries,
@@ -44,7 +45,7 @@ var config  = {
             minimize: false
           }
         }
-      },
+      }, //  如果不是一个node起服务的项目 不需这个, 那页面中的图片的引入则需要require('../img')方可保证图片路径正确
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -67,10 +68,15 @@ var config  = {
       }
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': env,
+    }),
+    new swigPlugin(),
+  ]
 }
 
 var viewsObj = getView('src/view/page/*.html', 'src/view/page');
-config.plugins = [];
 for (var key in viewsObj) {
   var htmlName = viewsObj[key];
   var chunks = htmlName == 'base' ? [htmlName, 'common'] : [htmlName];
